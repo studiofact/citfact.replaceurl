@@ -30,7 +30,6 @@ citfact.replaceurl
  - любое другое место где выводятся товары и массив $arResult имеет вид $arResult["ITEMS"]["НОМЕР_ЭЛЕМЕНТА"]["ИНФОРМАЦИЯ_О_ЭЛЕМЕНТЕ"]
 
 ##Пример вызова компонента:
-
 ``` php
 $arResultMod = $APPLICATION->IncludeComponent(
 	"citfact:citfact.replaceurl",
@@ -39,7 +38,7 @@ $arResultMod = $APPLICATION->IncludeComponent(
 		"array_modifier" => $arResult, //передаем массив $arResult в котором мы будем подменять URL
 	),
 false
-);
+); 
 $arResult = $arResultMod;
 ```
 ##Пример локального редиректа:
