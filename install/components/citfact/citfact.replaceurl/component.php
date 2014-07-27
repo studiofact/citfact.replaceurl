@@ -23,7 +23,7 @@ if(!empty($arParams["~array_modifier"]["ITEMS"])){
 					$replaceUrl = $arSect["SECTION_PAGE_URL"].$itemsCode;
 					
 					$arParams["~array_modifier"]["ITEMS"][$key]["DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/";
-					$arParams["~array_modifier"]["ITEMS"][$key]["~DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"]$itemsCode."/";
+					$arParams["~array_modifier"]["ITEMS"][$key]["~DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/";
 				}
 			}
 		}
