@@ -9,7 +9,7 @@ if(!empty($arParams["~array_modifier"]["ITEMS"])){
 	foreach($arParams["~array_modifier"]["ITEMS"] as $pid => &$value){
 		if(!empty($value["PROPERTIES"][$PROP_CODE]["VALUE"])){
 			$arSectionID[] = $value["PROPERTIES"][$PROP_CODE]["VALUE"];
-			$arUpdateLink[$value["PROPERTIES"][$PROP_CODE]["VALUE"]] = $pid;
+			$arUpdateLink[$pid] = $value["PROPERTIES"][$PROP_CODE]["VALUE"];
 		}
 	}
 	if(!empty($arSectionID)){
@@ -17,30 +17,35 @@ if(!empty($arParams["~array_modifier"]["ITEMS"])){
 		$rsSect = CIBlockSection::GetList(array('ID' => 'asc'),$arFilter);
 
 		while($arSect = $rsSect->GetNext()){
-
-			$itemsID = $arUpdateLink[$arSect["ID"]];
-			$itemsCode = $arParams["~array_modifier"]["ITEMS"][$itemsID]["CODE"];
-			$replaceUrl = $arSect["SECTION_PAGE_URL"].$itemsCode;
-			
-			$arParams["~array_modifier"]["ITEMS"][$itemsID]["DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/";
-			$arParams["~array_modifier"]["ITEMS"][$itemsID]["~DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/" ;
+			foreach($arUpdateLink as $key => &$value){
+				if($value == $arSect["ID"]){
+					$itemsCode = $arParams["~array_modifier"]["ITEMS"][$key]["CODE"];
+					$replaceUrl = $arSect["SECTION_PAGE_URL"].$itemsCode;
+					
+					$arParams["~array_modifier"]["ITEMS"][$key]["DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/";
+					$arParams["~array_modifier"]["ITEMS"][$key]["~DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"]$itemsCode."/";
+				}
+			}
 		}
 	}
 }else{	
 	$arSectionID = $arParams["~array_modifier"]["PROPERTIES"][$PROP_CODE]["VALUE"];
+
 	$arFilter = array('IBLOCK_ID' => $IBLOCK_ID,"ID"=>$arSectionID); 
-	$rsSect2= CIBlockSection::GetList(array('ID' => 'asc'),$arFilter);
-	if($arSect = $rsSect2->GetNext()){
-		$itemsCode = $arParams["~array_modifier"]["CODE"];
-		$arParams["~array_modifier"]["DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/";
-		$arParams["~array_modifier"]["~DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/";  
-		
-		$currentUrl = $APPLICATION->GetCurPageParam("", array(),false);
-		$currentUrl = explode('?',$currentUrl);
-		$currentUrlParams = !empty($currentUrl[1])? "?".$currentUrl[1] : "";
-		
-		if($currentUrl[0] != $arParams["~array_modifier"]["DETAIL_PAGE_URL"]){
-			LocalRedirect($arParams["~array_modifier"]["DETAIL_PAGE_URL"].$currentUrlParams,true,"301 Moved permanently");
+	if(!empty($arSectionID)){
+		$rsSect= CIBlockSection::GetList(array('ID' => 'asc'),$arFilter);
+		if($arSect = $rsSect->GetNext()){
+			$itemsCode = $arParams["~array_modifier"]["CODE"];
+			$arParams["~array_modifier"]["DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/";
+			$arParams["~array_modifier"]["~DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/";
+			
+			$currentUrl = $APPLICATION->GetCurPageParam("", array(),false);
+			$currentUrl = explode('?',$currentUrl);
+			$currentUrlParams = !empty($currentUrl[1])? "?".$currentUrl[1] : "";
+
+			if($currentUrl[0] != $arParams["~array_modifier"]["DETAIL_PAGE_URL"]){
+				LocalRedirect($arParams["~array_modifier"]["DETAIL_PAGE_URL"].$currentUrlParams,true,"301 Moved permanently");
+			}
 		}
 	}
 }
