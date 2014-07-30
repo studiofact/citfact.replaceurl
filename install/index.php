@@ -26,13 +26,13 @@ Class citfact_replaceurl extends CModule
 
 	function InstallDB($arParams = array())
 	{
-		RegisterModuleDependences('main', 'OnBuildGlobalMenu', self::MODULE_ID, 'CCitfactReplaceurl', 'OnBuildGlobalMenu');
+
 		return true;
 	}
 
 	function UnInstallDB($arParams = array())
 	{
-		UnRegisterModuleDependences('main', 'OnBuildGlobalMenu', self::MODULE_ID, 'CCitfactReplaceurl', 'OnBuildGlobalMenu');
+
 		return true;
 	}
 

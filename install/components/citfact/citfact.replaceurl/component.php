@@ -1,11 +1,22 @@
-<?
+<?php
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();?>
 <?
-
+use Citfact\Replaceurl;
 $PROP_CODE =  COption::GetOptionString("citfact.replaceurl", "PROPERTY_CODE", "MAIN_SECTION");
 $IBLOCK_ID = COption::GetOptionString("citfact.replaceurl", "IBLOCK_ID", "");
 
 if(!empty($arParams["~array_modifier"]["ITEMS"])){
+    $replaceSectURL = new Replaceurl\Section($arParams["~array_modifier"]["ITEMS"],$PROP_CODE,$IBLOCK_ID);
+    $arParams["~array_modifier"]["ITEMS"] = $replaceSectURL->updateURL();
+}else{
+    $replaceDetailURL = new Replaceurl\Detail($arParams["~array_modifier"],$PROP_CODE,$IBLOCK_ID);
+    $arParams["~array_modifier"] = $replaceDetailURL->updateURL();
+}
+
+return $arParams["~array_modifier"];
+
+
+/*if(!empty($arParams["~array_modifier"]["ITEMS"])){
 	foreach($arParams["~array_modifier"]["ITEMS"] as $pid => &$value){
 		if(!empty($value["PROPERTIES"][$PROP_CODE]["VALUE"])){
 			$arSectionID[] = $value["PROPERTIES"][$PROP_CODE]["VALUE"];
@@ -36,6 +47,7 @@ if(!empty($arParams["~array_modifier"]["ITEMS"])){
 		$rsSect= CIBlockSection::GetList(array('ID' => 'asc'),$arFilter);
 		if($arSect = $rsSect->GetNext()){
 			$itemsCode = $arParams["~array_modifier"]["CODE"];
+            $replaceUrl = $arSect['SECTION_PAGE_URL'].$itemsCode.'/';
 			$arParams["~array_modifier"]["DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/";
 			$arParams["~array_modifier"]["~DETAIL_PAGE_URL"] = $arSect["SECTION_PAGE_URL"].$itemsCode."/";
 			
@@ -50,5 +62,4 @@ if(!empty($arParams["~array_modifier"]["ITEMS"])){
 	}
 }
 		
-return $arParams["~array_modifier"];
-?>
+return $arParams["~array_modifier"];*/
