@@ -2,6 +2,8 @@
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();?>
 <?
 use Citfact\Replaceurl;
+CModule::includeModule('citfact.replaceurl');
+
 $PROP_CODE =  COption::GetOptionString("citfact.replaceurl", "PROPERTY_CODE", "MAIN_SECTION");
 $IBLOCK_ID = COption::GetOptionString("citfact.replaceurl", "IBLOCK_ID", "");
 
