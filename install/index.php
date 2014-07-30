@@ -197,4 +197,3 @@ class citfact_replaceurl extends CModule
 		$this->UnInstallFiles();
 	}
 }
-
