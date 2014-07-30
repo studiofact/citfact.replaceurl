@@ -54,7 +54,7 @@ class citfact_replaceurl extends CModule
     public $MODULE_PATH;
 
     /**
-     * Construct object
+     * Construct object 
      */
     public function __construct()
 	{
@@ -62,12 +62,12 @@ class citfact_replaceurl extends CModule
 		$this->MODULE_DESCRIPTION = Loc::getMessage("CITFACT_REPLACEURL_MODULE_DESC");
 		$this->PARTNER_NAME = Loc::getMessage("CITFACT_REPLACEURL_PARTNER_NAME");
 		$this->PARTNER_URI = Loc::getMessage("CITFACT_REPLACEURL_PARTNER_URI");
-
-        $arModuleVersion = array();
-        include $this->MODULE_PATH . "/install/version.php";
-
-        $this->MODULE_VERSION = $arModuleVersion["VERSION"];
-        $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
+	
+		$arModuleVersion = array();
+		include $this->MODULE_PATH . "/install/version.php";
+		
+		$this->MODULE_VERSION = $arModuleVersion["VERSION"];
+		$this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
 	}
 
     /**
