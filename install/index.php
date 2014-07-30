@@ -54,21 +54,21 @@ class citfact_replaceurl extends CModule
     public $MODULE_PATH;
 
     /**
-     * Construct object 
+     * Construct object
      */
     public function __construct()
-	{
-		$this->MODULE_NAME = Loc::getMessage("CITFACT_REPLACEURL_MODULE_NAME");
-		$this->MODULE_DESCRIPTION = Loc::getMessage("CITFACT_REPLACEURL_MODULE_DESC");
-		$this->PARTNER_NAME = Loc::getMessage("CITFACT_REPLACEURL_PARTNER_NAME");
-		$this->PARTNER_URI = Loc::getMessage("CITFACT_REPLACEURL_PARTNER_URI");
-	
-		$arModuleVersion = array();
-		include $this->MODULE_PATH . "/install/version.php";
-		
-		$this->MODULE_VERSION = $arModuleVersion["VERSION"];
-		$this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
-	}
+    {
+        $this->MODULE_NAME = Loc::getMessage("CITFACT_REPLACEURL_MODULE_NAME");
+        $this->MODULE_DESCRIPTION = Loc::getMessage("CITFACT_REPLACEURL_MODULE_DESC");
+        $this->PARTNER_NAME = Loc::getMessage("CITFACT_REPLACEURL_PARTNER_NAME");
+        $this->PARTNER_URI = Loc::getMessage("CITFACT_REPLACEURL_PARTNER_URI");
+
+        $arModuleVersion = array();
+        include $this->MODULE_PATH . "/install/version.php";
+
+        $this->MODULE_VERSION = $arModuleVersion["VERSION"];
+        $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
+    }
 
     /**
      * Return path module
@@ -111,9 +111,9 @@ class citfact_replaceurl extends CModule
      * @return bool
      */
     public function InstallDB()
-	{
-		return true;
-	}
+    {
+        return true;
+    }
 
     /**
      * Remove tables from the database
@@ -121,9 +121,9 @@ class citfact_replaceurl extends CModule
      * @return bool
      */
     public function UnInstallDB()
-	{
-		return true;
-	}
+    {
+        return true;
+    }
 
     /**
      * Add post events
@@ -131,9 +131,9 @@ class citfact_replaceurl extends CModule
      * @return bool
      */
     public function InstallEvents()
-	{
-		return true;
-	}
+    {
+        return true;
+    }
 
     /**
      * Delete post events
@@ -141,9 +141,9 @@ class citfact_replaceurl extends CModule
      * @return bool
      */
     public function UnInstallEvents()
-	{
-		return true;
-	}
+    {
+        return true;
+    }
 
     /**
      * Remove files module
@@ -151,11 +151,11 @@ class citfact_replaceurl extends CModule
      * @return bool
      */
     public function InstallFiles()
-	{
+    {
         CopyDirFiles($this->MODULE_PATH . '/install/components', $this->getComponentsPath(), true, true);
 
-		return true;
-	}
+        return true;
+    }
 
     /**
      * Remove files module
@@ -163,14 +163,14 @@ class citfact_replaceurl extends CModule
      * @return bool
      */
     public function UnInstallFiles()
-	{
+    {
         DeleteDirFilesEx($this->getComponentsPath(false) . '/citfact/citfact.replaceurl');
         if (!glob($this->getComponentsPath() . '/citfact/*')) {
-        @rmdir($this->getComponentsPath() . '/citfact/');
+            @rmdir($this->getComponentsPath() . '/citfact/');
         }
 
-		return true;
-	}
+        return true;
+    }
 
     /**
      * Install module
@@ -178,11 +178,11 @@ class citfact_replaceurl extends CModule
      * @return void
      */
     public function DoInstall()
-	{
-		$this->InstallFiles();
-		$this->InstallDB();
-		RegisterModule($this->MODULE_ID);
-   }
+    {
+        $this->InstallFiles();
+        $this->InstallDB();
+        RegisterModule($this->MODULE_ID);
+    }
 
 
     /**
@@ -191,9 +191,9 @@ class citfact_replaceurl extends CModule
      * @return void
      */
     public function DoUninstall()
-	{
-		UnRegisterModule($this->MODULE_ID);
-		$this->UnInstallDB();
-		$this->UnInstallFiles();
-	}
+    {
+        UnRegisterModule($this->MODULE_ID);
+        $this->UnInstallDB();
+        $this->UnInstallFiles();
+    }
 }
