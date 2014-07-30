@@ -93,6 +93,7 @@ Class citfact_replaceurl extends CModule
 	function DoInstall()
 	{
 		global $APPLICATION;
+        RegisterModuleDependences("iblock","OnBeforeIBlockElementAdd",$this->MODULE_ID,"cMainRPL","onBeforeElementAddHandler");
 		$this->InstallFiles();
 		$this->InstallDB();
 		RegisterModule(self::MODULE_ID);
@@ -103,6 +104,7 @@ Class citfact_replaceurl extends CModule
 	function DoUninstall()
 	{
 		global $APPLICATION;
+        UnRegisterModuleDependences("iblock","OnBeforeIBlockElementAdd",$this->MODULE_ID,"cMainRPL","onBeforeElementAddHandler");
 		UnRegisterModule(self::MODULE_ID);
 		$this->UnInstallDB();
 		$this->UnInstallFiles();

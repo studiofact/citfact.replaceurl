@@ -8,9 +8,12 @@ if($RIGHT >= "R") :
 ///// Читаем данные и формируем для вывода
 $arAllOptions = Array(
 	array("IBLOCK_ID","Индентификатор инфоблока","text",""),
-	array("PROPERTY_NAME","Название свойства","text","Главный раздел"),
-    array("PROPERTY_CODE", "Символьный код свойства","text", "MAIN_SECTION"),
-	array("ADD_PROPERTY","Добавить новое свойство для инфоблока","checkbox","")
+	array("PROPERTY_NAME","Название свойства для привзяки к главному разделу","text","Главный раздел"),
+    array("PROPERTY_CODE", "Символьный код свойства для привзяки к главному разделу","text", "MAIN_SECTION"),
+    array("SECTION_BREND_ID", "ID раздела бренды","text", ""),
+    array("PROPERTY_CODE_BRENDI", "Символьный код свойства Бренды","text", "BRENDI"),
+	array("ADD_PROPERTY","Добавить новое свойство для инфоблока","checkbox",""),
+
 );
 
 $aTabs = array(
