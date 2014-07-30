@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Maiyn6
- * Date: 30.07.14
- * Time: 21:07
- */
 
 namespace Citfact\Replaceurl;
 
