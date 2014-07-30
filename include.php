@@ -9,4 +9,10 @@ $arClasses=array(
 );
 
 CModule::AddAutoloadClasses("citfact.replaceurl",$arClasses);
+Class CCitfactReplaceurl
+{
+    function OnBuildGlobalMenu(&$aGlobalMenu, &$aModuleMenu){
+
+    }
+}
 ?>
