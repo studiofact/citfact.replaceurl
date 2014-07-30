@@ -54,7 +54,7 @@ class citfact_replaceurl extends CModule
     public $MODULE_PATH;
 
     /**
-     * Construct object
+     * Construct object 
      */
     public function __construct()
 	{
