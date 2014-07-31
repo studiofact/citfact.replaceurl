@@ -62,7 +62,7 @@ class citfact_replaceurl extends CModule
         $this->MODULE_DESCRIPTION = Loc::getMessage("CITFACT_REPLACEURL_MODULE_DESC");
         $this->PARTNER_NAME = Loc::getMessage("CITFACT_REPLACEURL_PARTNER_NAME");
         $this->PARTNER_URI = Loc::getMessage("CITFACT_REPLACEURL_PARTNER_URI");
-
+        $this->MODULE_PATH = $this->getModulePath();
         $arModuleVersion = array();
         include $this->MODULE_PATH . "/install/version.php";
 
