@@ -7,41 +7,41 @@ class Section {
     /**
      * @var int
      */
-    private $iblocID;
+    protected  $iblocID;
 
     /**
      * @var string
      */
-    private $codeProp;
+    protected $codeProp;
 
     /**
      * @var array
      */
-    private $arSectionID = array();
+    protected $arSectionID = array();
 
     /**
      * @var array
      */
-    private $arUpdateLink =array();
+    protected $arUpdateLink =array();
 
     /**
      * @var array
      */
-    private $arResultModifier = array();
+    protected $arResultModifier = array();
 
     /**
      * @param $arResultModifierItems
      * @param $codeProp
      * @param $iblockID
      */
-    public function __constructor($arResultModifierItems,$codeProp,$iblockID){
+    public function __construct($arResultModifierItems,$codeProp,$iblockID){
         $this->codeProp = $codeProp;
         $this->iblocID = $iblockID;
         $this->arResultModifier = $arResultModifierItems;
-        foreach($arResultModifierItems as $pid => &$value){
+        foreach($arResultModifierItems as $pid => $value){
             if(!empty($value['PROPERTIES'][$this->codeProp]['VALUE'])){
-                $this->arSectionID[] = $value['PROPERTIES'][$this->$PROP_CODE]['VALUE'];
-                $this->arUpdateLink[$pid] = $value['PROPERTIES'][$this->$PROP_CODE]['VALUE'];
+                $this->arSectionID[] = $value['PROPERTIES'][$this->codeProp]['VALUE'];
+                $this->arUpdateLink[$pid] = $value['PROPERTIES'][$this->codeProp]['VALUE'];
             }
         }
     }
@@ -51,30 +51,39 @@ class Section {
      */
     public function getSectionList(){
         $arFilter = array('IBLOCK_ID' => $this->iblocID,'ID'=>$this->arSectionID);
-        $rsSect = CIBlockSection::GetList(array('ID' => 'asc'),$arFilter);
-        
+        $rsSect = \CIBlockSection::GetList(array('ID' => 'asc'),$arFilter);
         return $rsSect;
     }
 
     /**
-     * @return array|bool
+     * @return bool
+     */
+    public function emptySection(){
+        if(empty($this->arSectionID)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return array
      */
     public function updateURL(){
-        if(!empty($this->arSectionID)){
+        if(!$this->emptySection()){
             $reqSect = $this->getSectionList();
             while($arSect = $reqSect->GetNext()){
                 foreach($this->arUpdateLink as $key => &$value){
                     if($value == $arSect['ID']){
-                        $itemsCode = $this->arResultModifier['ITEMS'][$key]['CODE'];
+                        $itemsCode = $this->arResultModifier[$key]['CODE'];
                         $replaceUrl = $arSect['SECTION_PAGE_URL'].$itemsCode.'/';
 
-                        $this->arResultModifier['ITEMS'][$key]['DETAIL_PAGE_URL'] = $replaceUrl;
-                        $this->arResultModifier['ITEMS'][$key]['~DETAIL_PAGE_URL'] = $replaceUrl;
+                        $this->arResultModifier[$key]['DETAIL_PAGE_URL'] = $replaceUrl;
+                        $this->arResultModifier[$key]['~DETAIL_PAGE_URL'] = $replaceUrl;
                     }
                 }
             }
             return $this->arResultModifier;
         }
-        return false;
+        return $this->arResultModifier;
     }
 }

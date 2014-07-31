@@ -24,7 +24,7 @@ class Detail {
      * @param $iblockID
      * @param $codeProp
      */
-    public function __constructor($arResultModifierDetail,$codeProp,$iblockID){
+    public function __construct($arResultModifierDetail,$codeProp,$iblockID){
         $this->arResultModifier = $arResultModifierDetail;
         $this->arSectionID = $arResultModifierDetail["PROPERTIES"][$codeProp]["VALUE"];
         $this->iblockID = $iblockID;
@@ -35,16 +35,26 @@ class Detail {
      */
     public function getSectionDetail(){
         $arFilter = array('IBLOCK_ID' => $this->iblockID,"ID"=>$this->arSectionID);
-        $rsSect= CIBlockSection::GetList(array('ID' => 'asc'),$arFilter);
+        $rsSect= \CIBlockSection::GetList(array('ID' => 'asc'),$arFilter);
 
         return $rsSect;
+    }
+
+    /**
+     * @return bool
+     */
+    public function emptySection(){
+        if(empty($this->arSectionID)){
+            return true;
+        }
+        return false;
     }
 
     /**
      * @return array|bool
      */
     public function updateURL(){
-        if(!empty($this->arSectionID)){
+        if(!$this->emptySection()){
             $reqSect = $this->getSectionDetail();
             if($arSect = $reqSect->GetNext()){
                 $itemsCode = $this->arResultModifier["CODE"];
@@ -57,7 +67,7 @@ class Detail {
             }
             return  $this->arResultModifier;
         }
-        return  false;
+        return  $this->arResultModifier;
     }
 
     public function localRedirect(){
