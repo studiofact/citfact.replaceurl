@@ -132,7 +132,7 @@ class citfact_replaceurl extends CModule
      */
     public function InstallEvents()
     {
-
+        RegisterModuleDependences("iblock","OnBeforeIBlockElementAdd",$this->MODULE_ID,'Citfact\Replaceurl\Event',"onBeforeElementAddHandler");
         return true;
     }
 
@@ -143,6 +143,7 @@ class citfact_replaceurl extends CModule
      */
     public function UnInstallEvents()
     {
+        UnRegisterModuleDependences("iblock","OnBeforeIBlockElementAdd",$this->MODULE_ID,'Citfact\Replaceurl\Event',"onBeforeElementAddHandler");
         return true;
     }
 
