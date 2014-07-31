@@ -1,111 +1,199 @@
-<?
-IncludeModuleLangFile(__FILE__);
-Class citfact_replaceurl extends CModule
+<?php
+
+/*
+ * This file is part of the Studio Fact package.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+use Bitrix\Main\Localization\Loc;
+
+Loc::loadMessages(__FILE__);
+
+class citfact_replaceurl extends CModule
 {
-	const MODULE_ID = 'citfact.replaceurl';
-	var $MODULE_ID = 'citfact.replaceurl'; 
-	var $MODULE_VERSION;
-	var $MODULE_VERSION_DATE;
-	var $MODULE_NAME;
-	var $MODULE_DESCRIPTION;
-	var $MODULE_CSS;
-	var $strError = '';
+    /**
+     * @var string
+     */
+    public $MODULE_ID = 'citfact.replaceurl';
 
-	function __construct()
-	{
-		$arModuleVersion = array();
-		include(dirname(__FILE__)."/version.php");
-		$this->MODULE_VERSION = $arModuleVersion["VERSION"];
-		$this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
-		$this->MODULE_NAME = GetMessage("citfact.replaceurl_MODULE_NAME");
-		$this->MODULE_DESCRIPTION = GetMessage("citfact.replaceurl_MODULE_DESC");
+    /**
+     * @var string
+     */
+    public $MODULE_VERSION;
 
-		$this->PARTNER_NAME = GetMessage("citfact.replaceurl_PARTNER_NAME");
-		$this->PARTNER_URI = GetMessage("citfact.replaceurl_PARTNER_URI");
-	}
+    /**
+     * @var string
+     */
+    public $MODULE_VERSION_DATE;
 
-	function InstallDB($arParams = array())
-	{
+    /**
+     * @var string
+     */
+    public $MODULE_NAME;
 
-		return true;
-	}
+    /**
+     * @var string
+     */
+    public $MODULE_DESCRIPTION;
 
-	function UnInstallDB($arParams = array())
-	{
+    /**
+     * @var string
+     */
+    public $PARTNER_NAME;
 
-		return true;
-	}
+    /**
+     * @var string
+     */
+    public $PARTNER_URI;
 
-	function InstallEvents()
-	{
-		return true;
-	}
+    /**
+     * @var string
+     */
+    public $MODULE_PATH;
 
-	function UnInstallEvents()
-	{
-		return true;
-	}
+    /**
+     * Construct object
+     */
+    public function __construct()
+    {
+        $this->MODULE_NAME = Loc::getMessage("CITFACT_REPLACEURL_MODULE_NAME");
+        $this->MODULE_DESCRIPTION = Loc::getMessage("CITFACT_REPLACEURL_MODULE_DESC");
+        $this->PARTNER_NAME = Loc::getMessage("CITFACT_REPLACEURL_PARTNER_NAME");
+        $this->PARTNER_URI = Loc::getMessage("CITFACT_REPLACEURL_PARTNER_URI");
 
-	function InstallFiles($arParams = array())
-	{
-		if (is_dir($p = $_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/'.self::MODULE_ID.'/install/components'))
-		{
-			if ($dir = opendir($p))
-			{
-				while (false !== $item = readdir($dir))
-				{
-					if ($item == '..' || $item == '.')
-						continue;
-					CopyDirFiles($p.'/'.$item, $_SERVER['DOCUMENT_ROOT'].'/bitrix/components/'.$item, $ReWrite = True, $Recursive = True);
-				}
-				closedir($dir);
-			}
-		}
-		return true;
-	}
+        $arModuleVersion = array();
+        include $this->MODULE_PATH . "/install/version.php";
 
-	function UnInstallFiles()
-	{
-		if (is_dir($p = $_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/'.self::MODULE_ID.'/install/components'))
-		{
-			if ($dir = opendir($p))
-			{
-				while (false !== $item = readdir($dir))
-				{
-					if ($item == '..' || $item == '.' || !is_dir($p0 = $p.'/'.$item))
-						continue;
+        $this->MODULE_VERSION = $arModuleVersion["VERSION"];
+        $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
+    }
 
-					$dir0 = opendir($p0);
-					while (false !== $item0 = readdir($dir0))
-					{
-						if ($item0 == '..' || $item0 == '.')
-							continue;
-						DeleteDirFilesEx('/bitrix/components/'.$item.'/'.$item0);
-					}
-					closedir($dir0);
-				}
-				closedir($dir);
-			}
-		}
-		return true;
-	}
+    /**
+     * Return path module
+     *
+     * @return string
+     */
+    protected function getModulePath()
+    {
+        $modulePath = explode('/', __FILE__);
+        $modulePath = array_slice($modulePath, 0, array_search($this->MODULE_ID, $modulePath) + 1);
 
-	function DoInstall()
-	{
-		global $APPLICATION;
-		$this->InstallFiles();
-		$this->InstallDB();
-		RegisterModule(self::MODULE_ID);
-   }
+        return join('/', $modulePath);
+    }
+
+    /**
+     * Return components path for install
+     *
+     * @param bool $absolute
+     * @return string
+     */
+    protected function getComponentsPath($absolute = true)
+    {
+        $documentRoot = getenv('DOCUMENT_ROOT');
+        if (strpos($this->MODULE_PATH, 'local/modules') !== false) {
+            $componentsPath = '/local/components';
+        } else {
+            $componentsPath = '/bitrix/components';
+        }
+
+        if ($absolute) {
+            $componentsPath = sprintf('%s%s', $documentRoot, $componentsPath);
+        }
+
+        return $componentsPath;
+    }
+
+    /**
+     * Add tables to the database
+     *
+     * @return bool
+     */
+    public function InstallDB()
+    {
+        return true;
+    }
+
+    /**
+     * Remove tables from the database
+     *
+     * @return bool
+     */
+    public function UnInstallDB()
+    {
+        return true;
+    }
+
+    /**
+     * Add post events
+     *
+     * @return bool
+     */
+    public function InstallEvents()
+    {
+        return true;
+    }
+
+    /**
+     * Delete post events
+     *
+     * @return bool
+     */
+    public function UnInstallEvents()
+    {
+        return true;
+    }
+
+    /**
+     * Remove files module
+     *
+     * @return bool
+     */
+    public function InstallFiles()
+    {
+        CopyDirFiles($this->MODULE_PATH . '/install/components', $this->getComponentsPath(), true, true);
+
+        return true;
+    }
+
+    /**
+     * Remove files module
+     *
+     * @return bool
+     */
+    public function UnInstallFiles()
+    {
+        DeleteDirFilesEx($this->getComponentsPath(false) . '/citfact/citfact.replaceurl');
+        if (!glob($this->getComponentsPath() . '/citfact/*')) {
+            @rmdir($this->getComponentsPath() . '/citfact/');
+        }
+
+        return true;
+    }
+
+    /**
+     * Install module
+     *
+     * @return void
+     */
+    public function DoInstall()
+    {
+        $this->InstallFiles();
+        $this->InstallDB();
+        RegisterModule($this->MODULE_ID);
+    }
 
 
-
-	function DoUninstall()
-	{
-		global $APPLICATION;
-		UnRegisterModule(self::MODULE_ID);
-		$this->UnInstallDB();
-		$this->UnInstallFiles();
-	}
+    /**
+     * Remove module
+     *
+     * @return void
+     */
+    public function DoUninstall()
+    {
+        UnRegisterModule($this->MODULE_ID);
+        $this->UnInstallDB();
+        $this->UnInstallFiles();
+    }
 }
-?>
