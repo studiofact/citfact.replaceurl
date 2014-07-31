@@ -132,6 +132,7 @@ class citfact_replaceurl extends CModule
      */
     public function InstallEvents()
     {
+
         return true;
     }
 
