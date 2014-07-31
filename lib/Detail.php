@@ -77,7 +77,7 @@ class Detail {
         $currentUrlParams = !empty($currentUrl[1])? "?".$currentUrl[1] : "";
 
         if($currentUrl[0] !=  $this->arResultModifier["DETAIL_PAGE_URL"]){
-            \LocalRedirect( $this->arResultModifier["DETAIL_PAGE_URL"].$currentUrlParams,true,"301 Moved permanently");
+            LocalRedirect( $this->arResultModifier["DETAIL_PAGE_URL"].$currentUrlParams,true,"301 Moved permanently");
         }
     }
 } 
