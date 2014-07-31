@@ -34,7 +34,7 @@ class Section {
      * @param $codeProp
      * @param $iblockID
      */
-    function __constructor($arResultModifierItems,$codeProp,$iblockID){
+    public function __constructor($arResultModifierItems,$codeProp,$iblockID){
         $this->codeProp = $codeProp;
         $this->iblocID = $iblockID;
         $this->arResultModifier = $arResultModifierItems;

@@ -24,7 +24,7 @@ class Detail {
      * @param $iblockID
      * @param $codeProp
      */
-    function __constructor($arResultModifierDetail,$codeProp,$iblockID){
+    public function __constructor($arResultModifierDetail,$codeProp,$iblockID){
         $this->arResultModifier = $arResultModifierDetail;
         $this->arSectionID = $arResultModifierDetail["PROPERTIES"][$codeProp]["VALUE"];
         $this->iblockID = $iblockID;
