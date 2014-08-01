@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Юзверь
- * Date: 31.07.14
- * Time: 18:52
- */
 
 namespace Citfact\Replaceurl;
 use Bitrix\Main\Config;
