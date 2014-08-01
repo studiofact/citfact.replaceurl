@@ -132,7 +132,6 @@ class citfact_replaceurl extends CModule
      */
     public function InstallEvents()
     {
-        RegisterModuleDependences("iblock","OnBeforeIBlockElementAdd",$this->MODULE_ID,'Citfact\Replaceurl\Event',"onBeforeElementAddHandler");
         return true;
     }
 
@@ -143,7 +142,6 @@ class citfact_replaceurl extends CModule
      */
     public function UnInstallEvents()
     {
-        UnRegisterModuleDependences("iblock","OnBeforeIBlockElementAdd",$this->MODULE_ID,'Citfact\Replaceurl\Event',"onBeforeElementAddHandler");
         return true;
     }
 
@@ -166,7 +164,7 @@ class citfact_replaceurl extends CModule
      */
     public function UnInstallFiles()
     {
-        DeleteDirFilesEx($this->getComponentsPath(false) . '/citfact/citfact.replaceurl');
+        DeleteDirFilesEx($this->getComponentsPath(false) . '/citfact/replaceurl');
         if (!glob($this->getComponentsPath() . '/citfact/*')) {
             @rmdir($this->getComponentsPath() . '/citfact/');
         }
@@ -181,6 +179,7 @@ class citfact_replaceurl extends CModule
      */
     public function DoInstall()
     {
+        RegisterModuleDependences("iblock","OnBeforeIBlockElementAdd",$this->MODULE_ID,'Citfact\Replaceurl\Event',"onBeforeElementAddHandler");
         $this->InstallFiles();
         $this->InstallDB();
         RegisterModule($this->MODULE_ID);
@@ -194,6 +193,7 @@ class citfact_replaceurl extends CModule
      */
     public function DoUninstall()
     {
+        UnRegisterModuleDependences("iblock","OnBeforeIBlockElementAdd",$this->MODULE_ID,'Citfact\Replaceurl\Event',"onBeforeElementAddHandler");
         UnRegisterModule($this->MODULE_ID);
         $this->UnInstallDB();
         $this->UnInstallFiles();

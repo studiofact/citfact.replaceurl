@@ -7,14 +7,16 @@
  */
 
 namespace Citfact\Replaceurl;
-
+use Bitrix\Main\Config;
 
 class Event {
-    public function onBeforeElementAddHandler($arFields){
+    static $MODULE_ID = "citfact.replaceurl";
 
-        $IBLOCK_ID = \COption::GetOptionString("citfact.replaceurl", "IBLOCK_ID", "");
-        $SECTION_ID = \COption::GetOptionString("citfact.replaceurl", "SECTION_BREND_ID", "BRENDI");
-        $CODE_PROP = \COption::GetOptionString("citfact.replaceurl", "PROPERTY_CODE_BRENDI", "BRENDI");
+    static function onBeforeElementAddHandler($arFields){
+
+        $IBLOCK_ID = Config\Option::get("citfact.replaceurl", "IBLOCK_ID", "");
+        $SECTION_ID = Config\Option::get("citfact.replaceurl", "SECTION_BREND_ID", "BRENDI");
+        $CODE_PROP = Config\Option::get("citfact.replaceurl", "PROPERTY_CODE_BRENDI", "BRENDI");
 
         if($IBLOCK_ID == $arFields["IBLOCK_ID"]){
 
