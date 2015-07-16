@@ -1,132 +1,107 @@
 <h1>Настройка модуля</h1>
 
 <?
-$module_id = "citfact.replaceurl";
-IncludeModuleLangFile($_SERVER["DOCUMENT_ROOT"].BX_ROOT."/modules/main/options.php");
-$RIGHT = $APPLICATION->GetGroupRight($module_id);
-if($RIGHT >= "R") :
-///// Читаем данные и формируем для вывода
-$arAllOptions = Array(
-	array("IBLOCK_ID","Индентификатор инфоблока","text",""),
-	array("PROPERTY_NAME","Название свойства для привзяки к главному разделу","text","Главный раздел"),
-    array("PROPERTY_CODE", "Символьный код свойства для привзяки к главному разделу","text", "MAIN_SECTION"),
-    array("SECTION_BREND_ID", "ID раздела бренды","text", ""),
-    array("PROPERTY_CODE_BRENDI", "Символьный код свойства Бренды","text", "BRENDI"),
-	array("ADD_PROPERTY","Добавить новое свойство для инфоблока","checkbox",""),
+use Bitrix\Main\Localization\Loc;
+use Bitrix\Main\Application;
+use Bitrix\Main\Config;
 
+
+Loc::loadMessages(__FILE__);
+
+$app = Application::getInstance();
+$request = $app->getContext()->getRequest();
+$moduleId = 'citfact.replaceurl';
+
+$allOptions = Array(
+    array("IBLOCK_ID",Loc::getMessage('IBLOCK_ID'),"text",""),
+    array("PROPERTY_NAME",Loc::getMessage('PROPERTY_NAME'),"text","Главный раздел"),
+    array("PROPERTY_CODE",Loc::getMessage('PROPERTY_CODE'),"text", "MAIN_SECTION"),
 );
 
-$aTabs = array(
-    array("DIV" => "edit1", "TAB" => GetMessage("MAIN_TAB_SET"), "ICON" => "perfmon_settings", "TITLE" => GetMessage("MAIN_TAB_TITLE_SET")),
-    array("DIV" => "edit2", "TAB" => GetMessage("MAIN_TAB_RIGHTS"), "ICON" => "perfmon_settings", "TITLE" => GetMessage("MAIN_TAB_TITLE_RIGHTS")),
+$controlTabs = array(
+    array("DIV" => "edit1", "TAB" => Loc::getMessage('REPLACEURL_TAB'), "TITLE" => Loc::getMessage('REPLACEURL_TAB_TITLE')),
 );
-$tabControl = new CAdminTabControl("tabControl", $aTabs);
+$tabControl = new CAdminTabControl("tabControl", $controlTabs);
 $arNotes = array();
-CModule::IncludeModule($module_id);
 
-if($REQUEST_METHOD=="POST" && strlen($Update.$Apply.$RestoreDefaults) > 0 && $RIGHT=="W" && check_bitrix_sessid())
-{
-    require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/perfmon/prolog.php");
 
-    if(strlen($RestoreDefaults)>0){
-        COption::RemoveOption($module_id,"IBLOCK_ID");
-		COption::RemoveOption($module_id,"PROPERTY_NAME");
-		COption::RemoveOption($module_id,"PROPERTY_CODE");
-		COption::RemoveOption($module_id,"ADD_PROPERTY");
-	}
-    else
-    {
-        foreach($arAllOptions as $arOption)
-        {
-			if($arOption[2] != "checkbox"){
-				$name=$arOption[0];
-				$val=$_REQUEST[$name];
-				if(!empty($val)){
-					COption::SetOptionString($module_id, $name, $val);
-				}else{
-					$arNotes[] = "Поле не может быть пустым";
-				}
-			}
-        }
-	}
-
-	if($_REQUEST["ADD_PROPERTY"] == "Y"){
-		if(CModule::IncludeModule('iblock')){
-			$IBLOCK_ID = $_REQUEST["IBLOCK_ID"];
-			$chek_uniq_req = CIBlockProperty::GetList(Array(), Array("ACTIVE"=>"Y", "IBLOCK_ID"=>$IBLOCK_ID,"CODE"=>$_REQUEST["PROPERTY_CODE"]));
-			
-			if (!$chek_uniq = $chek_uniq_req->GetNext()){
-			
-				$property_add = array(
-					"NAME" => $_REQUEST["PROPERTY_NAME"],
-					"ACTIVE" => "Y",
-					"IS_REQUIRED" =>"N",
-					"MULTIPLE"=>"N",
-					"MULTIPLE_CNT"=>14,
-					"SORT" => "500",
-					"CODE" => $_REQUEST["PROPERTY_CODE"],
-					"PROPERTY_TYPE" => "G",
-					"IBLOCK_ID" => $IBLOCK_ID,
-					"LINK_IBLOCK_ID"=>$IBLOCK_ID,
-				);
-				
-				$ibp = new CIBlockProperty;
-				if(!$ibp->Add( $property_add)){
-					$arNotes[]=$ibp->LAST_ERROR;
-				}
-				
-			}else{
-				$arNotes[]="Введите другой символьный код инфоблока";
-			}
-		}
-	}
-
-    ob_start();
-    $Update = $Update.$Apply;
-    require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/admin/group_rights.php");
-    ob_end_clean();
+if ($request->isPost() && $request->getPost('RESTORE_DEFAULTS')){
+    Config\Option::delete($moduleId);
 }
 
-?>
-<form method="post" action="<?echo $APPLICATION->GetCurPage()?>?mid=<?=urlencode($module_id)?>&amp;lang=<?=LANGUAGE_ID?>">
-    <?
-    $tabControl->Begin();
-    $tabControl->BeginNextTab();
+if ($request->isPost() && $request->getPost('UPDATE')){
+    foreach($allOptions as $option)
+    {
+        if($option[2] != "checkbox"){
+            $value = $request->getPost($option[0]);
+            if(!empty($value)){
+                Config\Option::set($moduleId, $option[0], $value);
+            }else{
+                $arNotes[] = "Поле не может быть пустым";
+            }
+        }
+    }
+}
 
-    foreach($arAllOptions as $arOption):
-        $val = COption::GetOptionString($module_id, $arOption[0], $arOption[3]);
-        $type = $arOption[2];
-        if(isset($arOption[4]))
-            $arNotes[] = $arOption[4];
+if ($request->isPost() && $request->getPost('ADD_PROPERTY') == 'Y'){
+    CModule::IncludeModule('iblock');
+    $IBLOCK_ID = $request->getPost('IBLOCK_ID');
+    $chek_uniq_req = CIBlockProperty::GetList(Array(), Array("ACTIVE"=>"Y", "IBLOCK_ID"=>$IBLOCK_ID,"CODE"=>$request->getPost('PROPERTY_CODE')));
+
+    if (!$chek_uniq = $chek_uniq_req->GetNext()){
+
+        $property_add = array(
+            "NAME" => $request->getPost('PROPERTY_NAME'),
+            "ACTIVE" => "Y",
+            "IS_REQUIRED" =>"N",
+            "MULTIPLE"=>"N",
+            "MULTIPLE_CNT"=>14,
+            "SORT" => "500",
+            "CODE" => $request->getPost('PROPERTY_CODE'),
+            "PROPERTY_TYPE" => "G",
+            "IBLOCK_ID" => $IBLOCK_ID,
+            "LINK_IBLOCK_ID"=>$IBLOCK_ID,
+        );
+        $ibp = new CIBlockProperty;
+        if(!$ibp->Add( $property_add)){
+            $arNotes[]=$ibp->LAST_ERROR;
+        }
+
+    }else{
+        $arNotes[]="Введите другой символьный код инфоблока";
+    }
+}
+$tabControl->Begin();
+?>
+<form method="post" action="<?echo $app->getContext()->getServer()->getRequestUri()?>">
+    <input type="hidden" name="mid" value="<?= $moduleId ?>">
+    <input type="hidden" name="lang" value="<?= LANGUAGE_ID ?>">
+    <?$tabControl->BeginNextTab();?>
+
+    <?foreach($allOptions as $option):?>
+        <?
+        $val = Config\Option::get($moduleId, $option[0], $option[3]);
+        $type = $option[2];
         ?>
+
         <tr>
             <td width="40%" nowrap <?if($type[0]=="textarea") echo 'class="adm-detail-valign-top"'?>>
-                <?if(isset($arOption[4])):?>
-                    <span class="required"><sup><?echo count($arNotes)?></sup></span>
-                <?endif;?>
-                <label for="<?echo htmlspecialcharsbx($arOption[0])?>"><?echo $arOption[1]?>:</label>
+                <label for="<?echo htmlspecialcharsbx($option[0])?>"><?echo $option[1]?>:</label>
             <td width="60%">
                 <?if($type=="checkbox"):?>
-                    <input type="checkbox" name="<?echo htmlspecialcharsbx($arOption[0])?>" id="<?echo htmlspecialcharsbx($arOption[0])?>" value="Y">
+                    <input type="checkbox" name="<?echo htmlspecialcharsbx($option[0])?>" id="<?echo htmlspecialcharsbx($option[0])?>" value="Y">
                 <?elseif($type=="text"):?>
-                    <input type="text" size="<?echo $type[1]?>" maxlength="255" value="<?echo htmlspecialcharsbx($val)?>" name="<?echo htmlspecialcharsbx($arOption[0])?>" id="<?echo htmlspecialcharsbx($arOption[0])?>"><?if($arOption[0] == "slow_sql_time") echo GetMessage("PERFMON_OPTIONS_SLOW_SQL_TIME_SEC")?>
+                    <input type="text" size="<?echo $type[1]?>" maxlength="255" value="<?echo htmlspecialcharsbx($val)?>" name="<?echo htmlspecialcharsbx($option[0])?>" id="<?echo htmlspecialcharsbx($option[0])?>"><?if($option[0] == "slow_sql_time") echo GetMessage("PERFMON_OPTIONS_SLOW_SQL_TIME_SEC")?>
                 <?elseif($type=="textarea"):?>
-                    <textarea rows="<?echo $type[1]?>" cols="<?echo $type[2]?>" name="<?echo htmlspecialcharsbx($arOption[0])?>" id="<?echo htmlspecialcharsbx($arOption[0])?>"><?echo htmlspecialcharsbx($val)?></textarea>
+                    <textarea rows="<?echo $type[1]?>" cols="<?echo $type[2]?>" name="<?echo htmlspecialcharsbx($option[0])?>" id="<?echo htmlspecialcharsbx($option[0])?>"><?echo htmlspecialcharsbx($val)?></textarea>
                 <?endif?>
             </td>
         </tr>
     <?endforeach?>
-    <?$tabControl->BeginNextTab();?>
-    <?require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/admin/group_rights.php");?>
+
     <?$tabControl->Buttons();?>
-    <input <?if ($RIGHT<"W") echo "disabled" ?> type="submit" name="Update" value="<?=GetMessage("MAIN_SAVE")?>" title="<?=GetMessage("MAIN_OPT_SAVE_TITLE")?>" class="adm-btn-save">
-    <input <?if ($RIGHT<"W") echo "disabled" ?> type="submit" name="Apply" value="<?=GetMessage("MAIN_OPT_APPLY")?>" title="<?=GetMessage("MAIN_OPT_APPLY_TITLE")?>">
-    <?if(strlen($_REQUEST["back_url_settings"])>0):?>
-        <input <?if ($RIGHT<"W") echo "disabled" ?> type="button" name="Cancel" value="<?=GetMessage("MAIN_OPT_CANCEL")?>" title="<?=GetMessage("MAIN_OPT_CANCEL_TITLE")?>" onclick="window.location='<?echo htmlspecialcharsbx(CUtil::addslashes($_REQUEST["back_url_settings"]))?>'">
-        <input type="hidden" name="back_url_settings" value="<?=htmlspecialcharsbx($_REQUEST["back_url_settings"])?>">
-    <?endif?>
-    <input type="submit" name="RestoreDefaults" title="<?echo GetMessage("MAIN_HINT_RESTORE_DEFAULTS")?>" OnClick="confirm('<?echo AddSlashes(GetMessage("MAIN_HINT_RESTORE_DEFAULTS_WARNING"))?>')" value="<?echo GetMessage("MAIN_RESTORE_DEFAULTS")?>">
-    <?=bitrix_sessid_post();?>
+    <input type="submit" name="UPDATE" value="<?= Loc::getMessage('BTN_SAVE') ?>" class="adm-btn-save">
+    <input type="submit" name="RESTORE_DEFAULTS" value="<?= Loc::getMessage("BTN_RESTORE") ?>">
     <?$tabControl->End();?>
 </form>
 <?
@@ -140,4 +115,4 @@ if(!empty($arNotes))
     echo EndNote();
 }
 ?>
-<?endif;?>
+
