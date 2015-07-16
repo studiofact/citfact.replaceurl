@@ -16,6 +16,7 @@ $allOptions = Array(
     array("IBLOCK_ID",Loc::getMessage('IBLOCK_ID'),"text",""),
     array("PROPERTY_NAME",Loc::getMessage('PROPERTY_NAME'),"text","Главный раздел"),
     array("PROPERTY_CODE",Loc::getMessage('PROPERTY_CODE'),"text", "MAIN_SECTION"),
+    array("ADD_PROPERTY",Loc::getMessage('ADD_PROPERTY'),"checkbox",""),
 );
 
 $controlTabs = array(
