@@ -33,7 +33,7 @@ class Detail {
     /**
      * @return mixed
      */
-    public function getSectionDetail(){
+    public function getCanonicalSection(){
         $arFilter = array('IBLOCK_ID' => $this->iblockID,"ID"=>$this->arSectionID);
         $rsSect= \CIBlockSection::GetList(array('ID' => 'asc'),$arFilter);
 
@@ -51,33 +51,21 @@ class Detail {
     }
 
     /**
-     * @return array|bool
+     * @return bool
      */
     public function updateURL(){
+        global $APPLICATION;
         if(!$this->emptySection()){
-            $reqSect = $this->getSectionDetail();
+            $reqSect = $this->getCanonicalSection();
             if($arSect = $reqSect->GetNext()){
                 $itemsCode = $this->arResultModifier["CODE"];
-                $replaceUrl = $arSect['SECTION_PAGE_URL'].$itemsCode.'/';
-
-                $this->arResultModifier["DETAIL_PAGE_URL"] = $replaceUrl;
-                $this->arResultModifier["~DETAIL_PAGE_URL"] = $replaceUrl;
+                $canonicalUrl = 'http://'.$_SERVER['SERVER_NAME'].$arSect['SECTION_PAGE_URL'].$itemsCode.'/';
+                if($arSect['SECTION_PAGE_URL'].$itemsCode.'/' != $this->arResultModifier['DETAIL_PAGE_URL']){
+                    $APPLICATION->AddHeadString('<link rel="canonical" href="'.$canonicalUrl.'"/>');
+                }
             }
-            return  $this->arResultModifier;
+            return  true;
         }
-        return  $this->arResultModifier;
-    }
-
-    /**
-     * @param $currentUri
-     */
-    public function localRedirect($currentUri){
-        $currentUrl = $currentUri;
-        $currentUrl = explode('?',$currentUrl);
-        $currentUrlParams = !empty($currentUrl[1])? "?".$currentUrl[1] : "";
-
-        if($currentUrl[0] !=  $this->arResultModifier["DETAIL_PAGE_URL"]){
-            LocalRedirect( $this->arResultModifier["DETAIL_PAGE_URL"].$currentUrlParams,true,"301 Moved permanently");
-        }
+        return  false;
     }
 } 

@@ -16,9 +16,6 @@ $allOptions = Array(
     array("IBLOCK_ID",Loc::getMessage('IBLOCK_ID'),"text",""),
     array("PROPERTY_NAME",Loc::getMessage('PROPERTY_NAME'),"text","Главный раздел"),
     array("PROPERTY_CODE",Loc::getMessage('PROPERTY_CODE'),"text", "MAIN_SECTION"),
-    array("SECTION_BREND_ID",Loc::getMessage('SECTION_BREND_ID'),"text", ""),
-    array("PROPERTY_CODE_BRENDI",Loc::getMessage('PROPERTY_CODE_BRENDI'),"text", "BRENDI"),
-    array("ADD_PROPERTY",Loc::getMessage('ADD_PROPERTY'),"checkbox",""),
 );
 
 $controlTabs = array(

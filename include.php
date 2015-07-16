@@ -17,6 +17,4 @@ Loader::includeModule('iblock');
 
 Loader::registerAutoLoadClasses('citfact.replaceurl', array(
     'Citfact\Replaceurl\Detail' => 'lib/Detail.php',
-    'Citfact\Replaceurl\Section' => 'lib/Section.php',
-    'Citfact\Replaceurl\Event' => 'lib/Event.php',
 ));
